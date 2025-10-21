@@ -50,11 +50,7 @@ async fn tokio_main() -> Result<()> {
         return Err(eyre!("Can not use --load with command"));
     }
 
-    if args.disable_auto_save {
-        let store = store::memory::MemoryStore::new();
-        let mut app = App::new(args, store, false)?;
-        app.run().await?;
-    } else if let Some(l) = &args.load {
+    if let Some(l) = &args.load {
         let store = store::sqlite::SQLiteStore::new(l.clone(), false)?;
         let mut app = App::new(args.clone(), store, true)?;
         app.run().await?;
@@ -63,18 +59,9 @@ async fn tokio_main() -> Result<()> {
         let mut app = App::new(args.clone(), store, false)?;
         app.run().await?;
     } else {
-        let tmp_dir = tempfile::tempdir()?;
-        let tmp_path = tmp_dir.into_path();
-        let file_path = tmp_path.join("backup.sqlite");
-        let store = store::sqlite::SQLiteStore::new(file_path.clone(), true)?;
-        let mut app = App::new(args.clone(), store, false)?;
+        let store = store::memory::MemoryStore::new();
+        let mut app = App::new(args, store, false)?;
         app.run().await?;
-
-        println!("Backup saved at {}", file_path.to_str().unwrap());
-        println!(
-            "Run `viddy --lookback {}` to load backup",
-            file_path.to_str().unwrap()
-        );
     }
 
     Ok(())

@@ -102,16 +102,9 @@ pub struct Cli {
         long = "save",
         value_name = "FILE",
         help = "Path to the backup file. If not provided, a temporary file will be created",
-        conflicts_with_all = ["disable_auto_save", "load"]
+        conflicts_with_all = ["load"]
     )]
     pub save: Option<PathBuf>,
-
-    #[arg(
-        long = "disable_auto_save",
-        help = "Disable to save automatically",
-        conflicts_with_all = ["save", "load"]
-    )]
-    pub disable_auto_save: bool,
 
     #[arg(long = "disable-mouse", help = "Stop handling mouse events")]
     pub disable_mouse: bool,
@@ -121,7 +114,7 @@ pub struct Cli {
         alias = "lookback",
         value_name = "FILE",
         help = "Path to the backup file",
-        conflicts_with_all = ["save", "disable_auto_save", "shell", "shell_options", "is_exec", "is_bell", "is_precise", "interval"]
+        conflicts_with_all = ["save", "shell", "shell_options", "is_exec", "is_bell", "is_precise", "interval"]
     )]
     pub load: Option<PathBuf>,
 }
