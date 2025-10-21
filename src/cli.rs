@@ -113,7 +113,7 @@ pub struct Cli {
     )]
     pub disable_auto_save: bool,
 
-    #[arg(long = "disable_mouse", help = "Stop handling mouse events")]
+    #[arg(long = "disable-mouse", help = "Stop handling mouse events")]
     pub disable_mouse: bool,
 
     #[arg(
