@@ -1,7 +1,7 @@
 [package]
 name = "viddy"
 license = "MIT"
-version = "1.3.0"
+version = "1.3.0-no-auto-save"
 edition = "2021"
 description = "A modern watch command"
 
