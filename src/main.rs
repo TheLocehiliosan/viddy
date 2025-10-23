@@ -50,19 +50,7 @@ async fn tokio_main() -> Result<()> {
         return Err(eyre!("Can not use --load with command"));
     }
 
-    if args.disable_auto_save {
-        let store = store::memory::MemoryStore::new();
-        let mut app = App::new(args, store, false)?;
-        app.run().await?;
-    } else if let Some(l) = &args.load {
-        let store = store::sqlite::SQLiteStore::new(l.clone(), false)?;
-        let mut app = App::new(args.clone(), store, true)?;
-        app.run().await?;
-    } else if let Some(b) = &args.save {
-        let store = store::sqlite::SQLiteStore::new(b.clone(), true)?;
-        let mut app = App::new(args.clone(), store, false)?;
-        app.run().await?;
-    } else {
+    if args.auto_save {
         // Create the temporary directory with owner-only permissions so the
         // backup (which may contain sensitive output) is not world-readable (#195).
         #[cfg(unix)]
@@ -85,6 +73,18 @@ async fn tokio_main() -> Result<()> {
             "Run `viddy --lookback {}` to load backup",
             file_path.to_str().unwrap()
         );
+    } else if let Some(l) = &args.load {
+        let store = store::sqlite::SQLiteStore::new(l.clone(), false)?;
+        let mut app = App::new(args.clone(), store, true)?;
+        app.run().await?;
+    } else if let Some(b) = &args.save {
+        let store = store::sqlite::SQLiteStore::new(b.clone(), true)?;
+        let mut app = App::new(args.clone(), store, false)?;
+        app.run().await?;
+    } else {
+        let store = store::memory::MemoryStore::new();
+        let mut app = App::new(args, store, false)?;
+        app.run().await?;
     }
 
     Ok(())
